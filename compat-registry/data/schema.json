@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "caniollama submission",
+  "type": "object",
+  "required": [
+    "model_name",
+    "ollama_version",
+    "suite_version",
+    "os",
+    "case_results",
+    "timestamp"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "model_name": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "model_quantization": { "type": ["string", "null"], "maxLength": 50 },
+    "ollama_version": { "type": "string", "minLength": 1, "maxLength": 50 },
+    "suite_version": { "type": "string", "minLength": 1, "maxLength": 50 },
+    "os": { "type": "string", "enum": ["linux", "macos", "windows"] },
+    "case_results": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["structured_pass", "json_fallback", "rejected", "error"]
+      }
+    },
+    "timestamp": { "type": "string", "format": "date-time" }
+  }
+}
