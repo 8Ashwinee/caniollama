@@ -1,6 +1,6 @@
 [project]
 name = "compat-registry"
-version = "0.1.1"
+version = "0.1.2"
 description = "Public, open registry of local-model tool-calling compatibility results"
 readme = "README.md"
 license = { text = "MIT" }
