@@ -4,11 +4,12 @@ RUN pip install --no-cache-dir uv
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml ./
+COPY README.md ./
 COPY src/ ./src/
 COPY data/ ./data/
 
-RUN uv sync --frozen
+RUN uv sync
 
 EXPOSE 8000
 
