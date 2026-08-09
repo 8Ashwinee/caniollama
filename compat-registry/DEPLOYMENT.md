@@ -10,7 +10,51 @@ This guide covers deploying the caniollama registry as a public service.
 
 ## Deployment Options
 
-### Option 1: Railway (Recommended for Simplicity)
+### Option 0: Docker with Pre-built Image (Fastest)
+
+Use the official container from GitHub Container Registry:
+
+```bash
+# Pull the latest image
+docker pull ghcr.io/anjalll/caniollama-registry:latest
+
+# Run with in-memory storage (testing)
+docker run -p 8000:8000 ghcr.io/anjalll/caniollama-registry:latest
+
+# Run with persistent database (production)
+docker run -d \
+  -p 8000:8000 \
+  -e COMPAT_REGISTRY_STORAGE_BACKEND=db \
+  -v $(pwd)/data:/app/data \
+  --name caniollama-registry \
+  ghcr.io/anjalll/caniollama-registry:latest
+```
+
+Or use Docker Compose (`docker-compose.yml`):
+
+```yaml
+version: '3.8'
+
+services:
+  registry:
+    image: ghcr.io/anjalll/caniollama-registry:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - COMPAT_REGISTRY_STORAGE_BACKEND=db
+      - COMPAT_REGISTRY_RATE_LIMIT_PER_MINUTE=60
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+```
+
+Run: `docker compose up -d`
+
+Access at: http://localhost:8000
+
+**Cost:** Free (run on your own hardware)
+
+### Option 1: Railway (Recommended for Cloud)
 
 Railway offers automatic deployments from GitHub with minimal configuration.
 
@@ -99,25 +143,33 @@ Railway offers automatic deployments from GitHub with minimal configuration.
 
 ### Option 4: VPS (DigitalOcean, Linode, etc.)
 
-For manual VPS deployment:
+For manual VPS deployment using the pre-built image:
 
 ```bash
 # On your VPS
-git clone https://github.com/AnjalLLL/caniollama.git
-cd caniollama/compat-registry
-
-# Build container
-docker build -t compat-registry:latest .
+# Pull the official image
+docker pull ghcr.io/anjalll/caniollama-registry:latest
 
 # Run with docker
 docker run -d \
   -p 8000:8000 \
   -e COMPAT_REGISTRY_STORAGE_BACKEND=db \
-  -v $(pwd)/data:/app/data \
-  --name compat-registry \
-  compat-registry:latest
+  -v /opt/caniollama/data:/app/data \
+  --restart unless-stopped \
+  --name caniollama-registry \
+  ghcr.io/anjalll/caniollama-registry:latest
 
 # Set up reverse proxy (nginx/caddy) for HTTPS
+```
+
+Or build from source:
+
+```bash
+git clone https://github.com/AnjalLLL/caniollama.git
+cd caniollama/compat-registry
+docker build -t caniollama-registry:local .
+docker run -d -p 8000:8000 -e COMPAT_REGISTRY_STORAGE_BACKEND=db \
+  -v $(pwd)/data:/app/data --name caniollama-registry caniollama-registry:local
 ```
 
 **Cost:** Starts at $4-6/month for basic VPS

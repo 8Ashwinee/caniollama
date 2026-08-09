@@ -19,18 +19,32 @@ A CLI tool that tests whether Ollama models properly support tool/function calli
 
 Results can be optionally submitted to a public registry for community benefit.
 
-## Quick Start
+## Installation
+
+### Quick Start (No Installation)
 
 ```bash
-# No installation needed - use uvx (recommended)
+# Using uvx (recommended)
 uvx caniollama check
 
 # Or with pipx
 pipx run caniollama check
-
-# Or install permanently
-pip install caniollama
 ```
+
+### Permanent Installation
+
+```bash
+# Using pip
+pip install caniollama
+
+# Using pipx (isolated environment)
+pipx install caniollama
+
+# Using uv
+uv tool install caniollama
+```
+
+See [Installation Guide](docs/installation.md) for detailed instructions, Docker setup, and troubleshooting.
 
 ### Check a specific model
 
@@ -66,17 +80,22 @@ This monorepo contains:
 
 ## Documentation
 
-- 📖 [CLI Usage Guide](compat-check/README.md)
+### User Guides
+- 📦 [Installation Guide](docs/installation.md) - Detailed installation for CLI and registry
+- 📖 [CLI Usage Guide](compat-check/README.md) - Command-line tool documentation
 - 🔌 [API Integration Guide](docs/api-integration.md) - For tool builders
-- 🚀 [Deployment Guide](compat-registry/DEPLOYMENT.md) - For hosting the registry
-- 🌍 [Cross-Platform Support](docs/cross-platform-support.md)
-- 🔒 [Privacy Policy](docs/privacy.md)
+- 🌍 [Cross-Platform Support](docs/cross-platform-support.md) - Platform-specific setup
+- 🔒 [Privacy Policy](docs/privacy.md) - Data collection transparency
+
+### Deployment
+- 🚀 [Registry Deployment Guide](compat-registry/DEPLOYMENT.md) - Self-hosting options
+- 🐳 [Docker Setup](docs/installation.md#registry-backend-self-hosted) - Container deployment
 
 ### For Developers
-
-- [Architecture Overview](COMPAT_REGISTRY_PROJECT_ARCHITECTURE.md)
-- [Design Proposal](TOOL_CALLING_REGISTRY_PROPOSAL.md)
-- [Release Checklist](RELEASE_CHECKLIST.md)
+- 🏗️ [Architecture Overview](COMPAT_REGISTRY_PROJECT_ARCHITECTURE.md)
+- 📋 [Design Proposal](TOOL_CALLING_REGISTRY_PROPOSAL.md)
+- 🤝 [Contributing Guide](CONTRIBUTING.md)
+- ✅ [Release Checklist](RELEASE_CHECKLIST.md)
 
 ## Requirements
 
@@ -115,7 +134,7 @@ Running compatibility checks...
 
 ## API Integration
 
-Query the public registry programmatically (once deployed):
+Query the public registry programmatically:
 
 ```python
 import httpx
@@ -125,7 +144,16 @@ data = response.json()
 print(f"Pass rate: {data['pass_rate']:.0%}")
 ```
 
-See [API Integration Guide](docs/api-integration.md) for full documentation.
+### Self-Hosted Registry
+
+Run your own instance with Docker:
+
+```bash
+docker pull ghcr.io/anjalll/caniollama-registry:latest
+docker run -p 8000:8000 ghcr.io/anjalll/caniollama-registry:latest
+```
+
+See [Installation Guide](docs/installation.md) and [API Integration Guide](docs/api-integration.md) for full documentation.
 
 ## Quick Development Setup
 

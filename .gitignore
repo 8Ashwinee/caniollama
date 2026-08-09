@@ -35,6 +35,10 @@ uv.lock
 htmlcov/
 .tox/
 
+# Linting
+.ruff_cache/
+.mypy_cache/
+
 # IDEs
 .vscode/
 .idea/
