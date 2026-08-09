@@ -17,8 +17,9 @@ dependencies = [
 caniollama = "compat_check.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/caniollama/caniollama"
-Registry = "https://github.com/caniollama/caniollama-registry"
+Homepage = "https://github.com/AnjalLLL/caniollama"
+Repository = "https://github.com/AnjalLLL/caniollama"
+Issues = "https://github.com/AnjalLLL/caniollama/issues"
 
 [dependency-groups]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10", "respx>=0.21"]
