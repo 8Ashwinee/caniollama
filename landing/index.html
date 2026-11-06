@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>caniollama — does your local Ollama model really call tools?</title>
+<meta name="description" content="caniollama is an open-source CLI that runs a standardized test suite against your local Ollama models and tells you whether tool/function calling actually works.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="caniollama — Ollama tool-calling compatibility checker">
+<meta property="og:description" content="Run one command to see if your local Ollama models return real structured tool calls, fall back to JSON in content, or get rejected. MIT licensed.">
+<meta property="og:url" content="https://caniollama.ghimireanjal.com.np/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0F172A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322C55E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 17 6-6-6-6'/%3E%3Cpath d='M12 19h8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F172A; --card:#1B2336; --muted:#272F42; --border:#334155; --border-strong:#475569;
+  --fg:#F8FAFC; --fg-muted:#94A3B8; --accent:#22C55E; --on-accent:#0F172A;
+  --warn:#FBBF24; --bad:#F87171;
+  --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 var(--sans);overflow-x:hidden}
+a{color:var(--accent)}
+code,pre,kbd{font-family:var(--mono)}
+svg{flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+@media(min-width:768px){.wrap{padding:0 32px}}
+:focus-visible{outline:2px solid var(--fg);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--accent);color:var(--on-accent);padding:10px 14px;border-radius:6px;z-index:100}
+.skip:focus{left:8px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* nav */
+header{position:sticky;top:0;z-index:50;background:rgba(15,23,42,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+nav{display:flex;align-items:center;gap:8px;min-height:64px}
+.brand{display:flex;align-items:center;gap:8px;font:600 17px var(--mono);color:var(--fg);text-decoration:none;min-height:44px;margin-right:auto}
+.navlinks{display:none;gap:4px}
+.navlinks a,.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 14px;border-radius:8px;text-decoration:none;font-weight:500;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s}
+.navlinks a{color:var(--fg-muted)}
+.navlinks a:hover{color:var(--fg);background:var(--muted)}
+@media(min-width:768px){.navlinks{display:flex}}
+.btn{border:1px solid var(--border-strong);background:transparent;color:var(--fg);font:500 15px var(--sans)}
+.btn:hover{background:var(--muted)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.btn-primary:hover{background:#4ADE80;border-color:#4ADE80}
+
+/* hero */
+.hero{padding:64px 0 40px;text-align:center}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--border-strong);border-radius:999px;font:500 13px var(--mono);color:var(--fg-muted)}
+.badge b{color:var(--accent);font-weight:500}
+h1{font:700 clamp(32px,6vw,56px)/1.1 var(--sans);letter-spacing:-.02em;margin:20px auto 16px;max-width:16ch;text-wrap:balance}
+h1 span{color:var(--accent)}
+.lede{color:var(--fg-muted);font-size:clamp(17px,2.2vw,20px);max-width:60ch;margin:0 auto 28px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:28px}
+.install{display:flex;align-items:center;max-width:440px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:4px 4px 4px 16px;font:15px var(--mono)}
+.install code{flex:1;text-align:left;overflow-x:auto;white-space:nowrap}
+.install code::before{content:"$ ";color:var(--fg-muted)}
+.copy{min-width:44px;min-height:44px;border:0;border-radius:8px;background:transparent;color:var(--fg-muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:color .2s,background-color .2s}
+.copy:hover{color:var(--fg);background:var(--muted)}
+.copy[data-copied]{color:var(--accent)}
+
+/* terminal */
+.term{margin:40px auto 0;max-width:900px;background:#020617;border:1px solid var(--border);border-radius:12px;overflow:hidden;text-align:left;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.term-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);font:13px var(--mono);color:var(--fg-muted)}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--border-strong)}
+.term pre{margin:0;padding:20px;overflow-x:auto;font-size:13.5px;line-height:1.7}
+@media(min-width:768px){.term pre{font-size:14px}}
+.p{color:var(--accent)}.dim{color:var(--fg-muted)}.ok{color:var(--accent)}.wn{color:var(--warn)}.bd{color:var(--bad)}
+.caption{font-size:14px;color:var(--fg-muted);text-align:center;margin-top:12px}
+
+/* sections */
+section{padding:72px 0}
+.eyebrow{font:500 13px var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px}
+h2{font:700 clamp(26px,4vw,36px)/1.2 var(--sans);margin:0 0 12px;letter-spacing:-.01em}
+.sub{color:var(--fg-muted);max-width:62ch;margin:0 0 36px}
+.grid{display:grid;gap:16px}
+@media(min-width:768px){.grid-2{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.grid-3{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
+.card h3{display:flex;align-items:center;gap:10px;font:600 17px var(--sans);margin:0 0 8px}
+.card h3 svg{color:var(--accent)}
+.card p{margin:0;color:var(--fg-muted)}
+.card code{font-size:.9em;color:var(--fg);background:var(--muted);padding:1px 6px;border-radius:4px}
+
+/* outcomes */
+.outcomes{list-style:none;padding:0;margin:0}
+.outcomes li{display:flex;gap:12px;padding:14px 0;border-top:1px solid var(--border)}
+.outcomes li:first-child{border-top:0}
+.outcomes code{font-size:14px}
+
+/* flow */
+.flow{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:s}
+@media(min-width:1024px){.flow{grid-template-columns:repeat(4,1fr)}}
+.flow li{counter-increment:s;position:relative}
+.flow li::before{content:"0" counter(s);display:block;font:600 13px var(--mono);color:var(--accent);margin-bottom:6px}
+
+/* quick start */
+.steps{display:grid;gap:16px}
+@media(min-width:1024px){.steps{grid-template-columns:1fr 1fr}}
+.code{position:relative;background:#020617;border:1px solid var(--border);border-radius:var(--r);margin:10px 0 0}
+.code pre{margin:0;padding:16px 56px 16px 16px;overflow-x:auto;font-size:14px;line-height:1.7}
+.code .copy{position:absolute;top:4px;right:4px}
+.step h3{font:600 17px var(--sans);margin:0}
+.step p{margin:4px 0 0;color:var(--fg-muted)}
+
+/* registry demo */
+.lookup{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.lookup label{width:100%;font-weight:500}
+.lookup input{flex:1;min-width:0;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--bg);color:var(--fg);font:15px var(--mono)}
+#result{margin-top:16px;font:14px/1.7 var(--mono);white-space:pre-wrap;color:var(--fg-muted)}
+
+footer{border-top:1px solid var(--border);padding:32px 0;color:var(--fg-muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-gh" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.7 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></symbol>
+  <symbol id="i-term" viewBox="0 0 24 24"><path d="m4 17 6-6-6-6M12 19h8"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4 20a1 1 0 0 0 .9 1.5h14.2A1 1 0 0 0 20 20L14 9V3"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M6 7h.01M6 17h.01"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a6 6 0 0 1-12 0V8z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+</svg>
+
+<header>
+  <nav class="wrap" aria-label="Primary">
+    <a class="brand" href="#top"><svg width="22" height="22" style="color:var(--accent)" aria-hidden="true"><use href="#i-term"/></svg>caniollama</a>
+    <div class="navlinks">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#quickstart">Quick start</a>
+    </div>
+    <a class="btn js-repo" href="https://github.com/AnjalLLL/caniollama"><svg width="18" height="18" aria-hidden="true"><use href="#i-gh"/></svg>GitHub</a>
+  </nav>
+</header>
+
+<main id="main">
+  <div class="hero wrap" id="top">
+    <span class="badge"><b>MIT</b> open source · Python 3.10+</span>
+    <h1>Does your local model <span>actually</span> call tools?</h1>
+    <p class="lede">caniollama runs a standardized tool-calling test suite against the models in your local Ollama and tells you which ones return real structured tool calls, which fall back to JSON in the text, and which get rejected.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="#quickstart"><svg width="18" height="18" aria-hidden="true"><use href="#i-term"/></svg>Get started</a>
+      <a class="btn js-repo" href="https://github.com/AnjalLLL/caniollama"><svg width="18" height="18" aria-hidden="true"><use href="#i-gh"/></svg>View on GitHub</a>
+    </div>
+    <div class="install">
+      <code>uvx caniollama check</code>
+      <button class="copy" type="button" data-copy="uvx caniollama check" aria-label="Copy install command"><svg width="18" height="18" aria-hidden="true"><use href="#i-copy"/></svg></button>
+    </div>
+
+    <figure class="term" style="margin-left:auto;margin-right:auto">
+      <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>terminal</span></div>
+<pre><span class="p">$</span> caniollama check qwen2.5-coder:7b
+
+<b>qwen2.5-coder:7b</b> <span class="dim">(quant: Q4_K_M, ollama 0.x, suite 1.x)</span>
+
+<span class="dim">Case                     Outcome                Latency</span>
+single_tool_basic        <span class="ok">structured pass</span>        <span class="dim">… ms</span>
+multi_tool_5x            <span class="ok">structured pass</span>        <span class="dim">… ms</span>
+no_tools_needed_control  <span class="ok">structured pass</span>        <span class="dim">… ms</span>
+multiturn_tool_result    <span class="wn">json fallback</span>          <span class="dim">… ms</span>
+
+<b>3/4</b> cases returned structured tool calls.</pre>
+      <figcaption class="sr-only">Example caniollama check output</figcaption>
+    </figure>
+    <p class="caption">Illustrative output. Case names and outcome labels are the real ones from the suite; results depend on your model and Ollama version.</p>
+  </div>
+
+  <section id="features" aria-labelledby="f-h">
+    <div class="wrap">
+      <p class="eyebrow">Features</p>
+      <h2 id="f-h">Tests real behavior, not model cards</h2>
+      <p class="sub">A model card saying "supports tools" doesn't mean it works in your Ollama setup. caniollama calls your local models and checks what actually comes back.</p>
+      <div class="grid grid-3">
+        <div class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-flask"/></svg>Standardized suite</h3><p>Every model gets the same four cases: a basic call, picking one tool out of five, a no-tool control, and a multi-turn follow-up with a tool result.</p></div>
+        <div class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-list"/></svg>Clear outcomes</h3><p>Each case comes back as one of four outcomes: structured pass, JSON fallback, rejected by backend, or error/timeout.</p></div>
+        <div class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-term"/></svg>Zero install</h3><p>Run it once with <code>uvx</code> or <code>pipx run</code>, or install it for good with pip, pipx or uv.</p></div>
+        <div class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-shield"/></svg>Opt-in, metadata only</h3><p>Results stay on your machine unless you pass <code>--submit</code>. Submissions carry the model name, Ollama version and pass/fail outcomes. Prompts and model outputs are never sent.</p></div>
+        <div class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-db"/></svg>Community registry</h3><p>A FastAPI backend that collects submissions and serves pass rates per model and per test case.</p></div>
+        <div class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-server"/></svg>Self-hostable</h3><p>Run the registry yourself with the Docker image, then point the CLI at it with <code>--registry-url</code>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="h-h">
+    <div class="wrap">
+      <p class="eyebrow">How it works</p>
+      <h2 id="h-h">From your Ollama to a compatibility verdict</h2>
+      <p class="sub">The CLI (<code>compat-check</code>) talks to Ollama directly. The registry (<code>compat-registry</code>) is optional.</p>
+      <ol class="flow">
+        <li class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-list"/></svg>Discover</h3><p>Finds the models pulled into your Ollama (or <code>OLLAMA_HOST</code>) and reads its version.</p></li>
+        <li class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-flask"/></svg>Run suite</h3><p>Sends each test case with tool definitions and records how long the response takes.</p></li>
+        <li class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-check"/></svg>Score</h3><p>Classifies every response and prints a local report table.</p></li>
+        <li class="card"><h3><svg width="20" height="20" aria-hidden="true"><use href="#i-db"/></svg>Submit (opt-in)</h3><p>With your consent, posts the reduced result to the registry, which aggregates it into per-model pass rates.</p></li>
+      </ol>
+
+      <div class="grid grid-2" style="margin-top:32px">
+        <div class="card">
+          <h3>The four outcomes</h3>
+          <ul class="outcomes">
+            <li><span class="ok" aria-hidden="true">●</span><div><code>structured_pass</code><br><span class="dim">Uses the native <code>tool_calls</code> field.</span></div></li>
+            <li><span class="wn" aria-hidden="true">●</span><div><code>json_fallback</code><br><span class="dim">Tries to call a tool, but writes the JSON into the message content.</span></div></li>
+            <li><span class="bd" aria-hidden="true">●</span><div><code>rejected</code><br><span class="dim">The backend refuses the <code>tools</code> parameter.</span></div></li>
+            <li><span class="dim" aria-hidden="true">●</span><div><code>error</code><br><span class="dim">Timeouts or other failures.</span></div></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Registry API</h3>
+          <p>Read-only endpoints for tool builders who want to check compatibility before choosing a model:</p>
+          <ul class="outcomes" style="margin-top:8px">
+            <li><code>GET /models</code></li>
+            <li><code>GET /models/{model_name}</code></li>
+            <li><code>GET /stats</code></li>
+            <li><code>GET /health</code> · <code>POST /submissions</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="quickstart" aria-labelledby="q-h">
+    <div class="wrap">
+      <p class="eyebrow">Quick start</p>
+      <h2 id="q-h">Up and running in a minute</h2>
+      <p class="sub">You need Ollama running locally with at least one model pulled. uvx/pipx take care of Python 3.10+ for you.</p>
+      <div class="steps">
+        <div class="step"><h3>1. Check every local model</h3><p>No install needed.</p>
+          <div class="code"><pre><code>uvx caniollama check
+# or
+pipx run caniollama check</code></pre><button class="copy" type="button" data-copy="uvx caniollama check" aria-label="Copy command"><svg width="18" height="18" aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
+        <div class="step"><h3>2. Check one model</h3><p>Pass the model name as Ollama lists it.</p>
+          <div class="code"><pre><code>caniollama check qwen2.5-coder:7b</code></pre><button class="copy" type="button" data-copy="caniollama check qwen2.5-coder:7b" aria-label="Copy command"><svg width="18" height="18" aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
+        <div class="step"><h3>3. Install permanently</h3><p>Pick your package manager.</p>
+          <div class="code"><pre><code>pip install caniollama
+pipx install caniollama
+uv tool install caniollama</code></pre><button class="copy" type="button" data-copy="pipx install caniollama" aria-label="Copy pipx install command"><svg width="18" height="18" aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
+        <div class="step"><h3>4. Share results (optional)</h3><p>Submits metadata only, after asking for consent.</p>
+          <div class="code"><pre><code>caniollama check --submit</code></pre><button class="copy" type="button" data-copy="caniollama check --submit" aria-label="Copy command"><svg width="18" height="18" aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
+      </div>
+
+      <div class="card" id="registry" style="margin-top:32px">
+        <h3><svg width="20" height="20" aria-hidden="true"><use href="#i-plug"/></svg>Query the registry</h3>
+        <div id="live" hidden>
+          <p>Connected to <code id="reg-url"></code>. Look up a model's pass rate by test case.</p>
+          <form class="lookup" id="lookup">
+            <label for="model">Model name</label>
+            <input type="text" id="model" name="model" value="qwen2.5-coder:7b" autocomplete="off" spellcheck="false" required>
+            <button class="btn btn-primary" type="submit">Look up</button>
+          </form>
+          <div id="result" role="status" aria-live="polite"></div>
+        </div>
+        <div id="static">
+          <p>Live lookup needs a registry backend. Run your own and open this page from <code>localhost</code> to try it:</p>
+          <div class="code"><pre><code>docker pull ghcr.io/anjalll/caniollama-registry:latest
+docker run -p 8000:8000 ghcr.io/anjalll/caniollama-registry:latest
+# API docs: http://localhost:8000/docs</code></pre><button class="copy" type="button" data-copy="docker run -p 8000:8000 ghcr.io/anjalll/caniollama-registry:latest" aria-label="Copy docker run command"><svg width="18" height="18" aria-hidden="true"><use href="#i-copy"/></svg></button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>caniollama · MIT License · Not affiliated with Ollama</span>
+    <a class="btn js-repo" href="https://github.com/AnjalLLL/caniollama"><svg width="18" height="18" aria-hidden="true"><use href="#i-gh"/></svg>Source on GitHub</a>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  var cfg = window.CANIOLLAMA_CONFIG || {};
+  if (cfg.repoUrl) document.querySelectorAll(".js-repo").forEach(function (a) { a.href = cfg.repoUrl; });
+
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (!navigator.clipboard) return;
+      navigator.clipboard.writeText(btn.dataset.copy).then(function () {
+        btn.setAttribute("data-copied", "");
+        var label = btn.getAttribute("aria-label");
+        btn.setAttribute("aria-label", "Copied");
+        setTimeout(function () { btn.removeAttribute("data-copied"); btn.setAttribute("aria-label", label); }, 1500);
+      });
+    });
+  });
+
+  // Live lookup only makes sense next to a locally running registry.
+  var local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  if (!local || !cfg.registryUrl) return;
+  var base = cfg.registryUrl.replace(/\/$/, "");
+  var out = document.getElementById("result");
+
+  fetch(base + "/health").then(function (r) {
+    if (!r.ok) throw 0;
+    document.getElementById("static").hidden = true;
+    document.getElementById("live").hidden = false;
+    document.getElementById("reg-url").textContent = base;
+  }).catch(function () { /* backend not running: keep self-host steps */ });
+
+  document.getElementById("lookup").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = document.getElementById("model").value.trim();
+    out.textContent = "Loading…";
+    fetch(base + "/models/" + encodeURIComponent(name)).then(function (r) {
+      if (r.status === 404) throw new Error("No reports for " + name + " yet.");
+      if (!r.ok) throw new Error("Registry returned " + r.status + ".");
+      return r.json();
+    }).then(function (d) {
+      out.textContent = d.model_name + " · " + d.total_reports + " report(s)\n" +
+        d.pass_rate_by_case.map(function (c) {
+          return c.case_id.padEnd(26) + Math.round(c.pass_rate * 100) + "%";
+        }).join("\n");
+    }).catch(function (err) { out.textContent = err.message || "Could not reach the registry."; });
+  });
+})();
+</script>
+</body>
+</html>

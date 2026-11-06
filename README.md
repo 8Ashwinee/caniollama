@@ -8,6 +8,8 @@
 
 Does your local LLM actually support function calling? Run `caniollama check` to find out.
 
+🌐 Landing page source: [`landing/`](landing/)
+
 ## What is this?
 
 A CLI tool that tests whether Ollama models properly support tool/function calling. It runs a standardized test suite and categorizes models into:
