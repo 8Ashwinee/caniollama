@@ -1,0 +1,38 @@
+name: Bug report
+description: Something in caniollama or the registry doesn't work
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you ran, what you expected, and what you got.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Full output
+      render: shell
+  - type: input
+    id: version
+    attributes:
+      label: caniollama version
+      placeholder: caniollama --version
+    validations:
+      required: true
+  - type: input
+    id: ollama
+    attributes:
+      label: Ollama version
+      placeholder: ollama --version
+  - type: input
+    id: env
+    attributes:
+      label: OS and Python version
+      placeholder: macOS 15, Python 3.12
+  - type: input
+    id: model
+    attributes:
+      label: Model (if relevant)
+      placeholder: qwen2.5-coder:7b

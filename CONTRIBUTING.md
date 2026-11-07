@@ -188,7 +188,7 @@ If you change `SubmissionPayload` or `SubmissionIn`:
    - `compat-check/src/compat_check/models.py`
    - `compat-registry/src/compat_registry/schemas/submission.py`
 
-2. Update `docs/data-format.md` (source of truth)
+2. Update `docs/registry/data-format.md` (source of truth)
 
 3. Verify with integration test:
    ```bash

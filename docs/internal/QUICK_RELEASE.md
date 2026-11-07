@@ -32,13 +32,13 @@ git push origin v0.1.0
 uvx caniollama --version
 
 # Container
-docker pull ghcr.io/anjalll/caniollama-registry:0.1.0
+docker pull ghcr.io/anjallll/caniollama-registry:0.1.0
 ```
 
 ## What Gets Published
 
 1. **PyPI Package** - `pip install caniollama`
-2. **Docker Image** - `ghcr.io/anjalll/caniollama-registry:latest`
+2. **Docker Image** - `ghcr.io/anjallll/caniollama-registry:latest`
 
 Both happen automatically on tag push!
 

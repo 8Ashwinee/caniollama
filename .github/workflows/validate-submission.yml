@@ -1,0 +1,54 @@
+name: Validate submission
+
+# Submissions may arrive as PRs adding one JSON file under compat-registry/data/results/.
+on:
+  pull_request:
+    paths:
+      - "compat-registry/data/results/**/*.json"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install jsonschema
+      - name: Validate changed files and reject edits outside data/results
+        env:
+          BASE: origin/${{ github.base_ref }}
+        run: |
+          OUTSIDE=$(git diff --name-only "$BASE"...HEAD -- . ':!compat-registry/data/results/**/*.json')
+          if [ -n "$OUTSIDE" ]; then
+            echo "::error::Submission PRs may only add files under compat-registry/data/results/. Found: $OUTSIDE"
+            exit 1
+          fi
+          git diff --name-only --diff-filter=AM "$BASE"...HEAD -- 'compat-registry/data/results/**/*.json' > changed.txt
+          python - <<'PYEOF'
+          import json, sys
+          from pathlib import Path
+          from jsonschema import Draft7Validator
+
+          validator = Draft7Validator(json.loads(Path("compat-registry/data/schema.json").read_text()))
+          failed = False
+          for f in filter(None, Path("changed.txt").read_text().splitlines()):
+              try:
+                  data = json.loads(Path(f).read_text())
+              except json.JSONDecodeError as exc:
+                  print(f"::error file={f}::Invalid JSON: {exc}")
+                  failed = True
+                  continue
+              errors = list(validator.iter_errors(data))
+              for e in errors:
+                  print(f"::error file={f}::{e.message}")
+              failed |= bool(errors)
+              if not errors:
+                  print(f"OK: {f}")
+          sys.exit(1 if failed else 0)
+          PYEOF

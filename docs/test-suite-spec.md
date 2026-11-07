@@ -3,7 +3,7 @@
 This documents what each fixed case in `src/compat_check/suite/cases.py` tests and why.
 Any change to a prompt, a tool schema, or a scoring rule in `scoring.py` requires bumping
 `SUITE_VERSION` in `suite/version.py` — this is what keeps registry results comparable
-over time (see `compat-registry`'s `docs/data-format.md`).
+over time (see [data format](registry/data-format.md)).
 
 ## `single_tool_basic`
 One relevant tool offered, one unambiguous prompt ("What is the weather in Tokyo?").

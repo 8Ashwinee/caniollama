@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.package }} (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { package: compat-check, python: "3.10" }
+          - { package: compat-check, python: "3.11" }
+          - { package: compat-check, python: "3.12" }
+          - { package: compat-check, python: "3.13" }
+          - { package: compat-registry, python: "3.11" }
+          - { package: compat-registry, python: "3.12" }
+          - { package: compat-registry, python: "3.13" }
+    defaults:
+      run:
+        working-directory: ${{ matrix.package }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv sync --all-extras --dev
+      - name: Lint
+        run: uv run ruff check .
+      - name: Type check
+        run: uv run mypy src
+      - name: Test with coverage
+        run: |
+          uv run pytest --cov=src --cov-report=term --cov-report=markdown-append:$GITHUB_STEP_SUMMARY
+
+  e2e:
+    name: Cross-package schema test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - working-directory: compat-registry
+        run: |
+          uv sync --dev
+          uv run --with ../compat-check pytest ../tests -v
+
+  suite-version:
+    name: SUITE_VERSION bump check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          BASE="origin/${{ github.base_ref }}"
+          CHANGED=$(git diff --name-only "$BASE"...HEAD)
+          if echo "$CHANGED" | grep -q "compat-check/src/compat_check/suite/cases.py"; then
+            if ! git diff "$BASE"...HEAD -- compat-check/src/compat_check/suite/version.py | grep -q "^[+-]SUITE_VERSION"; then
+              echo "::error::suite/cases.py changed but SUITE_VERSION in suite/version.py was not bumped"
+              exit 1
+            fi
+          fi
+          echo "OK"

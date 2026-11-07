@@ -12,7 +12,7 @@ Everything is ready for v0.1.0 release. Here's what was done and what's next.
 
 - **GHCR Container Release** (`.github/workflows/release-container.yml`)
   - Publishes Docker image to GitHub Container Registry
-  - Image: `ghcr.io/anjalll/caniollama-registry`
+  - Image: `ghcr.io/anjallll/caniollama-registry`
   - Multiple tags: `latest`, `0.1.0`, `0.1`, `0`
   - Triggered on same version tags
 
@@ -92,8 +92,8 @@ pipx run caniollama check
 
 **Container:**
 ```bash
-docker pull ghcr.io/anjalll/caniollama-registry:0.1.0
-docker run -p 8000:8000 ghcr.io/anjalll/caniollama-registry:0.1.0
+docker pull ghcr.io/anjallll/caniollama-registry:0.1.0
+docker run -p 8000:8000 ghcr.io/anjallll/caniollama-registry:0.1.0
 curl http://localhost:8000/
 ```
 
@@ -120,7 +120,7 @@ uvx caniollama check
 
 **Registry (Docker):**
 ```bash
-docker pull ghcr.io/anjalll/caniollama-registry:latest
+docker pull ghcr.io/anjallll/caniollama-registry:latest
 ```
 
 ### What's Included
@@ -163,14 +163,14 @@ pip install caniollama
 
 ```bash
 # Pull from GHCR
-docker pull ghcr.io/anjalll/caniollama-registry:latest
+docker pull ghcr.io/anjallll/caniollama-registry:latest
 
 # Run with persistent storage
 docker run -d -p 8000:8000 \
   -e COMPAT_REGISTRY_STORAGE_BACKEND=db \
   -v /opt/caniollama/data:/app/data \
   --restart unless-stopped \
-  ghcr.io/anjalll/caniollama-registry:latest
+  ghcr.io/anjallll/caniollama-registry:latest
 ```
 
 ### Use Docker Compose
@@ -179,7 +179,7 @@ docker run -d -p 8000:8000 \
 version: '3.8'
 services:
   registry:
-    image: ghcr.io/anjalll/caniollama-registry:latest
+    image: ghcr.io/anjallll/caniollama-registry:latest
     ports:
       - "8000:8000"
     environment:

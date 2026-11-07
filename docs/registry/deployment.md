@@ -16,10 +16,10 @@ Use the official container from GitHub Container Registry:
 
 ```bash
 # Pull the latest image
-docker pull ghcr.io/anjalll/caniollama-registry:latest
+docker pull ghcr.io/anjallll/caniollama-registry:latest
 
 # Run with in-memory storage (testing)
-docker run -p 8000:8000 ghcr.io/anjalll/caniollama-registry:latest
+docker run -p 8000:8000 ghcr.io/anjallll/caniollama-registry:latest
 
 # Run with persistent database (production)
 docker run -d \
@@ -27,7 +27,7 @@ docker run -d \
   -e COMPAT_REGISTRY_STORAGE_BACKEND=db \
   -v $(pwd)/data:/app/data \
   --name caniollama-registry \
-  ghcr.io/anjalll/caniollama-registry:latest
+  ghcr.io/anjallll/caniollama-registry:latest
 ```
 
 Or use Docker Compose (`docker-compose.yml`):
@@ -37,7 +37,7 @@ version: '3.8'
 
 services:
   registry:
-    image: ghcr.io/anjalll/caniollama-registry:latest
+    image: ghcr.io/anjallll/caniollama-registry:latest
     ports:
       - "8000:8000"
     environment:
@@ -148,7 +148,7 @@ For manual VPS deployment using the pre-built image:
 ```bash
 # On your VPS
 # Pull the official image
-docker pull ghcr.io/anjalll/caniollama-registry:latest
+docker pull ghcr.io/anjallll/caniollama-registry:latest
 
 # Run with docker
 docker run -d \
@@ -157,7 +157,7 @@ docker run -d \
   -v /opt/caniollama/data:/app/data \
   --restart unless-stopped \
   --name caniollama-registry \
-  ghcr.io/anjalll/caniollama-registry:latest
+  ghcr.io/anjallll/caniollama-registry:latest
 
 # Set up reverse proxy (nginx/caddy) for HTTPS
 ```

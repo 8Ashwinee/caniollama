@@ -1,6 +1,6 @@
 """Mirrors compat-check's `SubmissionPayload` shape. Kept as an independently
 maintained schema (not a shared package) so the two repos stay decoupled --
-see docs/data-format.md, which is the actual source of truth both sides follow."""
+see docs/registry/data-format.md at the repo root, which is the actual source of truth both sides follow."""
 
 from __future__ import annotations
 

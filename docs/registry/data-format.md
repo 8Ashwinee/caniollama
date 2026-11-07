@@ -43,4 +43,4 @@ repos' release cycles stay fully decoupled.
 ## What is never in this payload
 
 No prompts, no model output text, no free-form fields. See `caniollama`'s
-`docs/privacy.md` for the full explanation shown to users before they submit.
+[privacy](../privacy.md) for the full explanation shown to users before they submit.

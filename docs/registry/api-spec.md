@@ -6,7 +6,7 @@ at `/docs`. This is a short prose summary for quick reference.
 ## `POST /submissions`
 Create a new compatibility result. Open, no auth, rate-limited per IP
 (`COMPAT_REGISTRY_RATE_LIMIT_PER_MINUTE`, default 10/min).
-Body: see `data-format.md`. Returns `201` with the stored record (including its
+Body: see [data format](data-format.md). Returns `201` with the stored record (including its
 generated `id`), or `422` on schema validation failure, or `429` if rate-limited.
 
 ## `GET /models`

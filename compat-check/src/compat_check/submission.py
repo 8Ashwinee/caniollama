@@ -9,7 +9,7 @@ routed around.
 
 The prompt is shown every run, after results are already displayed -- never
 before, never silently skipped, never persisted as a "don't ask again"
-default. See docs/privacy.md for the full data-handling explanation shown to
+default. See https://anjallll.github.io/caniollama/privacy/ for the full data-handling explanation shown to
 users.
 """
 
@@ -28,7 +28,7 @@ def prompt_for_submission_consent(console: Console | None = None) -> bool:
         "\n[bold]Share this result with the public caniollama registry?[/]\n"
         "Only this gets sent, nothing else: model name, quantization, Ollama "
         "version, suite version, OS, and pass/fail per test case.\n"
-        "[dim]Prompts and model output are never sent. See docs/privacy.md.[/]\n"
+        "[dim]Prompts and model output are never sent. See https://anjallll.github.io/caniollama/privacy/[/]\n"
     )
     answer = console.input("Submit? [y/N] ").strip().lower()
     return answer in ("y", "yes")

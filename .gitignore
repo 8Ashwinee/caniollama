@@ -58,3 +58,6 @@ compat-registry/data/*.db-journal
 # Build artifacts
 *.whl
 *.tar.gz
+
+# MkDocs
+site/

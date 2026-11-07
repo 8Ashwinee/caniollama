@@ -26,7 +26,7 @@ the result into one of three real answers:
 After a run, you'll be asked -- every time, explicitly -- whether to submit the result
 (metadata only: model name, quantization, Ollama version, pass/fail per case) to the
 public [caniollama registry](https://github.com/caniollama/caniollama-registry). See
-[`docs/privacy.md`](docs/privacy.md) for exactly what is and isn't ever sent.
+[`docs/privacy.md`](https://anjallll.github.io/caniollama/privacy/) for exactly what is and isn't ever sent.
 
 ## Install
 

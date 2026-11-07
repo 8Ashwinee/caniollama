@@ -41,7 +41,7 @@ The package is fully ready. Both CLI and registry container will be published au
 ### What Gets Published Automatically:
 
 1. **CLI to PyPI** - Users can install via `pip install caniollama` or `uvx caniollama`
-2. **Registry Container to GHCR** - Available at `ghcr.io/anjalll/caniollama-registry:latest`
+2. **Registry Container to GHCR** - Available at `ghcr.io/anjallll/caniollama-registry:latest`
 
 ### Before First Release (One-Time Setup):
 
@@ -68,14 +68,14 @@ The CLI works standalone, but you can deploy a public registry for result submis
 
 ```bash
 # Pull from GitHub Container Registry
-docker pull ghcr.io/anjalll/caniollama-registry:latest
+docker pull ghcr.io/anjallll/caniollama-registry:latest
 
 # Run on your server
 docker run -d -p 8000:8000 \
   -e COMPAT_REGISTRY_STORAGE_BACKEND=db \
   -v /opt/caniollama/data:/app/data \
   --restart unless-stopped \
-  ghcr.io/anjalll/caniollama-registry:latest
+  ghcr.io/anjallll/caniollama-registry:latest
 ```
 
 **Cloud options:**
@@ -154,7 +154,7 @@ Watch both workflows complete:
 2. **Container Release:** https://github.com/AnjalLLL/caniollama/actions
    - Wait ~3-5 minutes (building Docker image)
    - Check published: https://github.com/AnjalLLL/caniollama/pkgs/container/caniollama-registry
-   - Test: `docker pull ghcr.io/anjalll/caniollama-registry:0.1.0`
+   - Test: `docker pull ghcr.io/anjallll/caniollama-registry:0.1.0`
 
 ### Step 5: Create GitHub Release
 
@@ -174,9 +174,9 @@ When you tag v0.1.0, two workflows run automatically:
    - Install: `pip install caniollama` or `uvx caniollama`
 
 2. **Docker Container** (`release-container.yml`)
-   - Image: `ghcr.io/anjalll/caniollama-registry`
+   - Image: `ghcr.io/anjallll/caniollama-registry`
    - Tags: `latest`, `0.1.0`, `0.1`, `0`
-   - Pull: `docker pull ghcr.io/anjalll/caniollama-registry:latest`
+   - Pull: `docker pull ghcr.io/anjallll/caniollama-registry:latest`
 
 ## 🎯 Post-Release Tasks
 

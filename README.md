@@ -2,13 +2,16 @@
 
 [![PyPI version](https://badge.fury.io/py/caniollama.svg)](https://pypi.org/project/caniollama/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/AnjalLLL/caniollama/actions/workflows/ci.yml/badge.svg)](https://github.com/AnjalLLL/caniollama/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/AnjalLLL/caniollama/actions/workflows/codeql.yml/badge.svg)](https://github.com/AnjalLLL/caniollama/actions/workflows/codeql.yml)
+[![Docs](https://img.shields.io/badge/docs-anjallll.github.io-blue)](https://anjallll.github.io/caniollama/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 **Standardized compatibility checker for local Ollama model tool-calling support.**
 
 Does your local LLM actually support function calling? Run `caniollama check` to find out.
 
-🌐 Landing page source: [`landing/`](landing/)
+📖 **Docs:** https://anjallll.github.io/caniollama/ · 🌐 Landing page source: [`landing/`](landing/)
 
 ## What is this?
 
@@ -90,14 +93,14 @@ This monorepo contains:
 - 🔒 [Privacy Policy](docs/privacy.md) - Data collection transparency
 
 ### Deployment
-- 🚀 [Registry Deployment Guide](compat-registry/DEPLOYMENT.md) - Self-hosting options
+- 🚀 [Registry Deployment Guide](docs/registry/deployment.md) - Self-hosting options
 - 🐳 [Docker Setup](docs/installation.md#registry-backend-self-hosted) - Container deployment
 
 ### For Developers
-- 🏗️ [Architecture Overview](COMPAT_REGISTRY_PROJECT_ARCHITECTURE.md)
-- 📋 [Design Proposal](TOOL_CALLING_REGISTRY_PROPOSAL.md)
+- 🏗️ [Architecture Overview](docs/internal/COMPAT_REGISTRY_PROJECT_ARCHITECTURE.md)
+- 📋 [Design Proposal](docs/internal/TOOL_CALLING_REGISTRY_PROPOSAL.md)
 - 🤝 [Contributing Guide](CONTRIBUTING.md)
-- ✅ [Release Checklist](RELEASE_CHECKLIST.md)
+- ✅ [Release Checklist](docs/internal/RELEASE_CHECKLIST.md)
 
 ## Requirements
 
@@ -151,8 +154,8 @@ print(f"Pass rate: {data['pass_rate']:.0%}")
 Run your own instance with Docker:
 
 ```bash
-docker pull ghcr.io/anjalll/caniollama-registry:latest
-docker run -p 8000:8000 ghcr.io/anjalll/caniollama-registry:latest
+docker pull ghcr.io/anjallll/caniollama-registry:latest
+docker run -p 8000:8000 ghcr.io/anjallll/caniollama-registry:latest
 ```
 
 See [Installation Guide](docs/installation.md) and [API Integration Guide](docs/api-integration.md) for full documentation.
@@ -191,8 +194,10 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Support
 
 - 📫 [Open an issue](https://github.com/AnjalLLL/caniollama/issues)
+- 💬 [Discussions](https://github.com/AnjalLLL/caniollama/discussions)
+- 🔒 [Security policy](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Changelog](CHANGELOG.md)
 
 ---
 
-**Status:** Pre-1.0 (v0.1.0 ready for release)  
+**Status:** Pre-1.0 (latest: see PyPI badge above)  
 **Stars appreciated!** ⭐

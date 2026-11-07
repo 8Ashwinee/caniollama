@@ -22,7 +22,7 @@ Repository = "https://github.com/AnjalLLL/caniollama"
 Issues = "https://github.com/AnjalLLL/caniollama/issues"
 
 [dependency-groups]
-dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10", "respx>=0.21"]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10", "respx>=0.21"]
 
 [build-system]
 requires = ["hatchling"]
