@@ -97,10 +97,7 @@ This monorepo contains:
 - 🐳 [Docker Setup](docs/installation.md#registry-backend-self-hosted) - Container deployment
 
 ### For Developers
-- 🏗️ [Architecture Overview](docs/internal/COMPAT_REGISTRY_PROJECT_ARCHITECTURE.md)
-- 📋 [Design Proposal](docs/internal/TOOL_CALLING_REGISTRY_PROPOSAL.md)
 - 🤝 [Contributing Guide](CONTRIBUTING.md)
-- ✅ [Release Checklist](docs/internal/RELEASE_CHECKLIST.md)
 
 ## Requirements
 

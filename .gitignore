@@ -61,3 +61,7 @@ compat-registry/data/*.db-journal
 
 # MkDocs
 site/
+
+# Local planning docs (not published)
+FUTURE_PLAN.md
+docs/internal/
