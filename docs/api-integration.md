@@ -123,7 +123,7 @@ Health check endpoint.
 ```python
 import httpx
 
-REGISTRY_URL = "https://registry.caniollama.dev"  # Update when deployed
+REGISTRY_URL = "https://registry.caniollama.ghimireanjal.com.np"
 
 def get_model_compatibility(model_name: str) -> dict | None:
     """Fetch compatibility data for a model, return None if no data exists."""
@@ -144,7 +144,7 @@ else:
 ### JavaScript/TypeScript with fetch
 
 ```typescript
-const REGISTRY_URL = "https://registry.caniollama.dev";
+const REGISTRY_URL = "https://registry.caniollama.ghimireanjal.com.np";
 
 interface ModelSummary {
   model_name: string;
@@ -174,13 +174,13 @@ async function getModelCompatibility(
 
 ```bash
 # List all models
-curl https://registry.caniollama.dev/models
+curl https://registry.caniollama.ghimireanjal.com.np/models
 
 # Get specific model details
-curl https://registry.caniollama.dev/models/qwen2.5-coder:7b
+curl https://registry.caniollama.ghimireanjal.com.np/models/qwen2.5-coder:7b
 
 # Check if model has data (returns 404 if not)
-curl -I https://registry.caniollama.dev/models/unknown-model:latest
+curl -I https://registry.caniollama.ghimireanjal.com.np/models/unknown-model:latest
 ```
 
 ## Rate Limiting

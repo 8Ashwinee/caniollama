@@ -1,0 +1,3 @@
+{$REGISTRY_DOMAIN} {
+	reverse_proxy registry:8000
+}

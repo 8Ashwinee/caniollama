@@ -4,7 +4,14 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+## [0.1.4] - 2026-11-07
+### Changed
+- Default registry URL is now `https://registry.caniollama.ghimireanjal.com.np` (the old `registry.caniollama.dev` never resolved, so `--submit` always failed).
+### Fixed
+- `caniollama --version` and the registry's `/health` reported `0.1.0`; the version now comes from package metadata.
 ### Added
+- `compat-registry/deploy/`: Docker Compose + Caddy (automatic HTTPS) setup and a script for a free GCP e2-micro VM.
 - Root CI (lint, type check, tests with coverage), CodeQL, Dependabot, docs site.
 - Build provenance attestations for PyPI and container releases.
 
@@ -18,6 +25,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Fixed test suite v1.0.0: single tool, 5-tool selection, no-tool control, multi-turn tool result
 - Opt-in, metadata-only submission to the registry
 
-[Unreleased]: https://github.com/AnjalLLL/caniollama/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/AnjalLLL/caniollama/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/AnjalLLL/caniollama/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/AnjalLLL/caniollama/compare/v0.1.0...v0.1.3
 [0.1.0]: https://github.com/AnjalLLL/caniollama/releases/tag/v0.1.0

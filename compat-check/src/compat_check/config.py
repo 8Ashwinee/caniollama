@@ -10,7 +10,7 @@ from dataclasses import dataclass
 class Settings:
     ollama_base_url: str = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
     registry_base_url: str = os.environ.get(
-        "CANIOLLAMA_REGISTRY_URL", "https://registry.caniollama.dev"
+        "CANIOLLAMA_REGISTRY_URL", "https://registry.caniollama.ghimireanjal.com.np"
     )
     request_timeout_seconds: float = float(os.environ.get("CANIOLLAMA_TIMEOUT", "30"))
     submit_timeout_seconds: float = float(os.environ.get("CANIOLLAMA_SUBMIT_TIMEOUT", "10"))

@@ -181,7 +181,7 @@ curl http://localhost:8000/models/qwen2.5-coder:7b
 **Solutions:**
 1. Run without submission: `caniollama check` (no `--submit` flag)
 2. Check registry URL: `echo $CANIOLLAMA_REGISTRY_URL`
-3. Verify registry is running: `curl https://registry.caniollama.dev/`
+3. Verify registry is running: `curl https://registry.caniollama.ghimireanjal.com.np/`
 
 ### Permission Errors
 

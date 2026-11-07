@@ -144,7 +144,7 @@ Query the public registry programmatically:
 ```python
 import httpx
 
-response = httpx.get("https://registry.caniollama.dev/models/qwen2.5-coder:7b")
+response = httpx.get("https://registry.caniollama.ghimireanjal.com.np/models/qwen2.5-coder:7b")
 data = response.json()
 print(f"Pass rate: {data['pass_rate']:.0%}")
 ```

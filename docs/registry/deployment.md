@@ -1,5 +1,27 @@
 # Registry Deployment Guide
 
+## Production setup (what the public registry runs)
+
+[`compat-registry/deploy/`](https://github.com/AnjalLLL/caniollama/tree/main/compat-registry/deploy) holds a Docker Compose file that runs the registry with the SQLite backend on a persistent `./data` directory, behind Caddy for automatic HTTPS.
+
+```bash
+# On any Linux server with Docker:
+curl -fsSLO https://raw.githubusercontent.com/AnjalLLL/caniollama/main/compat-registry/deploy/docker-compose.yml
+curl -fsSLO https://raw.githubusercontent.com/AnjalLLL/caniollama/main/compat-registry/deploy/Caddyfile
+REGISTRY_DOMAIN=registry.example.com docker compose up -d
+```
+
+Point an `A` record for the domain at the server first (on Cloudflare, use **DNS only**) so Caddy can get a certificate.
+
+**Free hosting:** `deploy/gcp-free-vm.sh` creates a Google Cloud Always Free `e2-micro` VM (us-central1, 30 GB standard disk) that runs the setup above on boot:
+
+```bash
+PROJECT=my-gcp-project REGISTRY_DOMAIN=registry.example.com compat-registry/deploy/gcp-free-vm.sh
+```
+
+Then point clients at it with `CANIOLLAMA_REGISTRY_URL=https://registry.example.com`.
+
+
 This guide covers deploying the caniollama registry as a public service.
 
 ## Prerequisites
