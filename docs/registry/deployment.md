@@ -1,8 +1,8 @@
 # Registry Deployment Guide
 
-## Production setup (what the public registry runs)
+## Production setup
 
-[`compat-registry/deploy/`](https://github.com/AnjalLLL/caniollama/tree/main/compat-registry/deploy) holds a Docker Compose file that runs the registry with the SQLite backend on a persistent `./data` directory, behind Caddy for automatic HTTPS.
+[`compat-registry/deploy/`](https://github.com/AnjalLLL/caniollama/tree/main/compat-registry/deploy) holds a Docker Compose file for self-hosting: the registry with the SQLite backend on a persistent `./data` directory, behind Caddy for automatic HTTPS.
 
 ```bash
 # On any Linux server with Docker:
@@ -13,11 +13,11 @@ REGISTRY_DOMAIN=registry.example.com docker compose up -d
 
 Point an `A` record for the domain at the server first (on Cloudflare, use **DNS only**) so Caddy can get a certificate.
 
-**Free hosting:** `deploy/gcp-free-vm.sh` creates a Google Cloud Always Free `e2-micro` VM (us-central1, 30 GB standard disk) that runs the setup above on boot:
+**Free hosting (no card): Vercel + Neon Postgres.** This is what the public registry runs.
 
-```bash
-PROJECT=my-gcp-project REGISTRY_DOMAIN=registry.example.com compat-registry/deploy/gcp-free-vm.sh
-```
+1. In Vercel, import the repo as a new project with **Root Directory** `compat-registry`.
+2. Project → **Storage** → **Create Database** → **Neon** (free). It sets `DATABASE_URL`, and the registry switches to Postgres automatically.
+3. Redeploy, then add your domain under **Settings → Domains**.
 
 Then point clients at it with `CANIOLLAMA_REGISTRY_URL=https://registry.example.com`.
 

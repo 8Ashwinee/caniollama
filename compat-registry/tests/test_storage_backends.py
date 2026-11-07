@@ -1,10 +1,11 @@
+import os
 from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
 
 from compat_registry.schemas.submission import SubmissionIn
-from compat_registry.storage.db_backend import SQLiteStorageBackend
+from compat_registry.storage.db_backend import PostgresStorageBackend, SQLiteStorageBackend
 from compat_registry.storage.file_backend import FileStorageBackend
 
 SAMPLE = SubmissionIn(
@@ -18,10 +19,18 @@ SAMPLE = SubmissionIn(
 )
 
 
-@pytest.fixture(params=["file", "db"])
+@pytest.fixture(params=["file", "db", "postgres"])
 def backend(request, tmp_path: Path):
     if request.param == "file":
         return FileStorageBackend(tmp_path)
+    if request.param == "postgres":
+        url = os.environ.get("TEST_DATABASE_URL")
+        if not url:
+            pytest.skip("TEST_DATABASE_URL not set")
+        b = PostgresStorageBackend(url)
+        with b._connect() as conn:
+            conn.execute("TRUNCATE submissions")
+        return b
     return SQLiteStorageBackend(tmp_path / "registry.sqlite3")
 
 

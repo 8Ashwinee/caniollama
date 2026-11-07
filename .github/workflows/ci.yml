@@ -23,6 +23,15 @@ jobs:
           - { package: compat-registry, python: "3.11" }
           - { package: compat-registry, python: "3.12" }
           - { package: compat-registry, python: "3.13" }
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: pw
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:pw@localhost:5432/postgres
     defaults:
       run:
         working-directory: ${{ matrix.package }}

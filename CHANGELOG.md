@@ -11,7 +11,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ### Fixed
 - `caniollama --version` and the registry's `/health` reported `0.1.0`; the version now comes from package metadata.
 ### Added
-- `compat-registry/deploy/`: Docker Compose + Caddy (automatic HTTPS) setup and a script for a free GCP e2-micro VM.
+- Postgres storage backend, used automatically when `DATABASE_URL` is set.
+- Vercel deployment (`compat-registry/api/index.py`, `vercel.json`) for the public registry, backed by Neon Postgres.
+- `compat-registry/deploy/`: Docker Compose + Caddy (automatic HTTPS) for self-hosting.
 - Root CI (lint, type check, tests with coverage), CodeQL, Dependabot, docs site.
 - Build provenance attestations for PyPI and container releases.
 
