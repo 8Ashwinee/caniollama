@@ -130,8 +130,6 @@ The report includes these possible outcomes:
 - `json fallback` — Tool JSON returned in content.
 - `rejected by backend` — Backend rejected the tools request.
 - `error / timeout` — Request timed out or encountered an error.
-```
-```
 
 ## API Integration
 
